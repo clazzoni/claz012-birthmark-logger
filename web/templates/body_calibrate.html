@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Calibrate body regions — Birth Mark Tracker{% endblock %}
+
+
+
+{% block content %}
+
+<section class="page-header">
+
+  <h1>Calibrate body regions</h1>
+
+  <p class="muted">
+
+    Drag each box so it covers the matching body part. Resize using the handle in the bottom-right corner.
+
+    Copy the coordinates and paste them into <code>app/overview_hotspots.py</code> under <code>FIGURE_REGIONS</code>,
+
+    or share them in chat so they can be applied for you.
+
+  </p>
+
+  <p><a href="/">← Back to home</a></p>
+
+</section>
+
+
+
+<div class="body-overview-grid body-overview-grid-large">
+
+  <section class="card body-overview-panel">
+
+    <h2>Front</h2>
+
+    <div class="overview-map" data-calibrate="front" data-hotspots='{{ front_hotspots_json | safe }}'>
+
+      <img src="/static/body/overview_front.svg" alt="Front body overview" class="overview-svg">
+
+    </div>
+
+  </section>
+
+
+
+  <section class="card body-overview-panel">
+
+    <h2>Back</h2>
+
+    <div class="overview-map" data-calibrate="back" data-hotspots='{{ back_hotspots_json | safe }}'>
+
+      <img src="/static/body/overview_back.svg" alt="Back body overview" class="overview-svg">
+
+    </div>
+
+  </section>
+
+</div>
+
+
+
+<section class="card">
+
+  <h2>Exported coordinates</h2>
+
+  <p class="muted small">Paste into <code>FIGURE_REGIONS</code> in <code>app/overview_hotspots.py</code>.</p>
+
+  <textarea id="calibrate-export" class="calibrate-export" rows="14" readonly></textarea>
+
+  <button type="button" id="calibrate-copy" class="btn">Copy coordinates</button>
+
+</section>
+
+{% endblock %}
+
+
+
+{% block scripts %}
+
+<script>
+
+  const CALIBRATE_FIGURE_BBOX = {{ figure_bbox_json | safe }};
+
+</script>
+
+<script src="/static/body-calibrate.js"></script>
+
+{% endblock %}
+

@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}{% if mark.is_placed %}Move{% else %}Place{% endif %} {{ mark.id }} — Body map{% endblock %}
+
+{% block content %}
+<section class="page-header">
+  <div>
+    <p class="eyebrow">{{ mark.id }}</p>
+    <h1>
+      {% if mark.is_placed and same_region %}
+      Move pin
+      {% elif mark.is_placed %}
+      Move to another region
+      {% else %}
+      Place on body map
+      {% endif %}
+    </h1>
+    <p class="muted">{{ mark.label }}</p>
+  </div>
+  <a href="/marks/{{ mark.id }}">Back to mark</a>
+</section>
+
+{% if not selected_region %}
+<section class="card">
+  <h2>Choose region</h2>
+  <p class="muted">Pick the body region where this mark should appear.</p>
+  <ul class="region-pick-list">
+    {% for region_id in regions %}
+    <li>
+      <a class="button secondary" href="/marks/{{ mark.id }}/place?region={{ region_id }}">
+        {{ region_labels[region_id] }}
+        {% if mark.map_region == region_id %}<span class="muted">(current)</span>{% endif %}
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+{% else %}
+<section class="card">
+  <h2>{{ selected_region_label }}</h2>
+  {% if mark.is_placed and same_region %}
+  <p class="muted">Click a new position on the diagram. The red dot shows the current pin.</p>
+  {% elif mark.is_placed %}
+  <p class="muted">This mark was in another region. Click on the diagram to set its new position.</p>
+  {% else %}
+  <p class="muted">Click on the diagram to set the pin position.</p>
+  {% endif %}
+
+  <form method="post" action="/marks/{{ mark.id }}/place">
+    <input type="hidden" name="map_region" value="{{ selected_region }}">
+    <input type="hidden" name="map_x" id="map_x"
+      value="{{ mark.map_x if same_region and mark.map_x is not none else '' }}">
+    <input type="hidden" name="map_y" id="map_y"
+      value="{{ mark.map_y if same_region and mark.map_y is not none else '' }}">
+
+    <div class="region-map-container"
+         data-marks='{{ placement_preview | tojson | safe }}'
+         data-mirrored="{{ 'true' if mirrored else 'false' }}"
+         data-clickable="true">
+      <div class="region-map-inner{% if mirrored %} mirrored{% endif %}">
+        <img src="/static/body/{{ svg_file }}" alt="{{ selected_region_label }}" class="region-svg-img">
+        <div class="pin-overlay"></div>
+        <div class="placement-preview"
+          {% if not same_region or mark.map_x is none %}hidden{% endif %}
+          style="{% if same_region and mark.map_x is not none %}left:{{ mark.map_x * 100 }}%;top:{{ mark.map_y * 100 }}%;{% endif %}"></div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="button" id="placement-submit"
+        {% if not same_region or mark.map_x is none %}disabled{% endif %}>
+        {% if mark.is_placed %}Save new position{% else %}Save placement{% endif %}
+      </button>
+      <a href="/marks/{{ mark.id }}/place">Change region</a>
+    </div>
+  </form>
+</section>
+{% endif %}
+
+{% if mark.is_placed %}
+<section class="card">
+  <form method="post" action="/marks/{{ mark.id }}/place/clear">
+    <button type="submit" class="button danger">Remove from map</button>
+  </form>
+</section>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/body-map.js"></script>
+{% endblock %}

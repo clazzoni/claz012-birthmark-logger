@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}{{ region_label }} — Body map{% endblock %}
+
+{% block content %}
+<section class="page-header">
+  <div>
+    <p class="eyebrow"><a href="/">Home</a></p>
+    <h1>{{ region_label }}</h1>
+  </div>
+  <a href="/">Back to home</a>
+</section>
+
+{% if placed_marks %}
+<p class="muted small region-update-notice">
+  Detail images were updated to match the body map overview. You may need to reposition pins.
+</p>
+{% endif %}
+
+<section class="card">
+  <div class="region-map-container"
+       data-marks='{{ placed_marks | tojson | safe }}'
+       data-mirrored="{{ 'true' if mirrored else 'false' }}"
+       data-clickable="false">
+    <div class="region-map-inner{% if mirrored %} mirrored{% endif %}">
+      <img src="/static/body/{{ svg_file }}" alt="{{ region_label }}" class="region-svg-img">
+      <div class="pin-overlay"></div>
+    </div>
+  </div>
+  <p class="muted">Click a pin to open that mark.</p>
+</section>
+
+{% if unplaced_marks %}
+<section class="card">
+  <h2>Place an unplaced mark</h2>
+  <ul class="place-mark-list">
+    {% for mark in unplaced_marks %}
+    <li>
+      <a href="/marks/{{ mark.id }}/place?region={{ region }}">{{ mark.id }} — {{ mark.label }}</a>
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+
+{% if placed_marks %}
+<section class="card">
+  <h2>Marks in this region</h2>
+  <ul class="place-mark-list">
+    {% for mark in placed_marks %}
+    <li>
+      <a href="/marks/{{ mark.id }}">{{ mark.id }} — {{ mark.label }}</a>
+      <a href="/marks/{{ mark.id }}/place">Move pin</a>
+      <a href="/marks/{{ mark.id }}/compare">Compare</a>
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+{% else %}
+<div class="empty-state compact">
+  <p>No marks placed in this region yet.</p>
+  {% if unplaced_marks %}
+  <p class="muted">Choose an unplaced mark above to set its position.</p>
+  {% else %}
+  <a class="button" href="/marks/new">Add mark</a>
+  {% endif %}
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/body-map.js"></script>
+{% endblock %}

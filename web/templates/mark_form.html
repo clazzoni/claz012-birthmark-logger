@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}{{ action }} mark — Birth Mark Tracker{% endblock %}
+
+{% block content %}
+<section class="page-header">
+  <h1>{{ action }} mark</h1>
+</section>
+
+<form class="card form" method="post" action="{% if mark %}/marks/{{ mark.id }}/edit{% else %}/marks/new{% endif %}">
+  <label>
+    Label
+    <input type="text" name="label" required value="{{ mark.label if mark else '' }}" placeholder="e.g. mole below left knee">
+  </label>
+
+  <fieldset class="body-region-fieldset">
+    <legend>Body region</legend>
+    <p class="muted small">Choose from the body map regions below, or use the dropdown.</p>
+
+    {% if legacy_body_region %}
+    <p class="muted small legacy-region-note">
+      Previously saved as “{{ legacy_body_region }}”. Pick a map region to update.
+    </p>
+    {% endif %}
+
+    <label class="body-region-select-label">
+      Selected region
+      <select name="body_region" id="body_region">
+        <option value="">— Not set —</option>
+        {% for region_id in regions %}
+        <option value="{{ region_id }}"
+          {% if mark and mark.body_region == region_id %}selected{% endif %}>
+          {{ region_labels[region_id] }}
+        </option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <div class="mark-form-maps">
+      <section class="mark-form-map-panel">
+        <h3>Front</h3>
+        <div class="overview-map">
+          <img src="/static/body/overview_front.svg" alt="Front body overview" class="overview-svg">
+          {% for spot in front_hotspots %}
+          <button type="button"
+                  class="region-hotspot region-pick-hotspot"
+                  data-region="{{ spot.region }}"
+                  style="left:{{ spot.left }}%;top:{{ spot.top }}%;width:{{ spot.width }}%;height:{{ spot.height }}%;"
+                  title="{{ spot.label }}"
+                  aria-label="{{ spot.label }}">
+            <span class="region-hotspot-label">{{ spot.label }}</span>
+          </button>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section class="mark-form-map-panel">
+        <h3>Back</h3>
+        <div class="overview-map">
+          <img src="/static/body/overview_back.svg" alt="Back body overview" class="overview-svg">
+          {% for spot in back_hotspots %}
+          <button type="button"
+                  class="region-hotspot region-pick-hotspot"
+                  data-region="{{ spot.region }}"
+                  style="left:{{ spot.left }}%;top:{{ spot.top }}%;width:{{ spot.width }}%;height:{{ spot.height }}%;"
+                  title="{{ spot.label }}"
+                  aria-label="{{ spot.label }}">
+            <span class="region-hotspot-label">{{ spot.label }}</span>
+          </button>
+          {% endfor %}
+        </div>
+      </section>
+    </div>
+  </fieldset>
+
+  <label>
+    Notes
+    <textarea name="notes" rows="4" placeholder="Optional notes about this mark">{{ mark.notes if mark and mark.notes else '' }}</textarea>
+  </label>
+
+  <div class="form-actions">
+    <button type="submit" class="button">{{ action }}</button>
+    <a href="{% if mark %}/marks/{{ mark.id }}{% else %}/{% endif %}">Cancel</a>
+    {% if mark %}
+    <a class="danger-link" href="/marks/{{ mark.id }}/delete">Delete mark</a>
+    {% endif %}
+  </div>
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/mark-form.js"></script>
+{% endblock %}

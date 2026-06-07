@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Settings — Birth Mark Tracker{% endblock %}
+
+{% block content %}
+<section class="page-header">
+  <h1>Settings</h1>
+</section>
+
+<section class="card">
+  <h2>Data location</h2>
+  <p>All images and the database are stored locally at:</p>
+  <code class="path">{{ data_dir }}</code>
+
+  <h2>Backup</h2>
+  <p>Copy the entire <code>data/</code> folder to back up your marks, photos, and capture history.</p>
+</section>
+{% endblock %}

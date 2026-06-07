@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+{% block title %}Birth marks — Birth Mark Tracker{% endblock %}
+{% block main_class %}container-wide{% endblock %}
+
+{% block content %}
+<section class="page-header">
+  <div>
+    <h1>Birth marks</h1>
+    <p class="muted">Click a body region to view placed marks, or pick a mark from the list.</p>
+  </div>
+  <a class="button" href="/marks/new">Add mark</a>
+</section>
+
+<div class="home-layout">
+  <aside class="home-map-panel">
+    <section class="card body-overview-panel">
+      <h2>Front</h2>
+      <div class="overview-map">
+        <img src="/static/body/overview_front.svg" alt="Front body overview" class="overview-svg">
+        {% for spot in front_hotspots %}
+        <a class="region-hotspot{% if debug %} region-hotspot-debug{% endif %}"
+           href="/body/{{ spot.region }}"
+           style="left:{{ spot.left }}%;top:{{ spot.top }}%;width:{{ spot.width }}%;height:{{ spot.height }}%;"
+           title="{{ spot.label }}{% if spot.count %} ({{ spot.count }}){% endif %}">
+          <span class="region-hotspot-label">{{ spot.label }}{% if spot.count %} · {{ spot.count }}{% endif %}</span>
+        </a>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="card body-overview-panel">
+      <h2>Back</h2>
+      <div class="overview-map">
+        <img src="/static/body/overview_back.svg" alt="Back body overview" class="overview-svg">
+        {% for spot in back_hotspots %}
+        <a class="region-hotspot{% if debug %} region-hotspot-debug{% endif %}"
+           href="/body/{{ spot.region }}"
+           style="left:{{ spot.left }}%;top:{{ spot.top }}%;width:{{ spot.width }}%;height:{{ spot.height }}%;"
+           title="{{ spot.label }}{% if spot.count %} ({{ spot.count }}){% endif %}">
+          <span class="region-hotspot-label">{{ spot.label }}{% if spot.count %} · {{ spot.count }}{% endif %}</span>
+        </a>
+        {% endfor %}
+      </div>
+    </section>
+
+    <p class="muted small home-map-footer">
+      {% if debug %}
+      Debug mode: region outlines are visible. <a href="/">Hide outlines</a>
+      {% else %}
+      Regions misaligned?
+      <a href="/?debug=1">Show outlines</a>
+      or
+      <a href="/body/calibrate">calibrate regions</a>.
+      {% endif %}
+      <span class="home-map-attribution">
+        Outlines from
+        <a href="https://commons.wikimedia.org/wiki/File:Silhouette_humain_asexue_anterieur_posterieur.svg" target="_blank" rel="noopener">Wikimedia Commons (CC0)</a>.
+      </span>
+    </p>
+  </aside>
+
+  <section class="home-marks-panel">
+    <form class="search-form" method="get" action="/">
+      {% if debug %}<input type="hidden" name="debug" value="1">{% endif %}
+      <input type="search" name="q" value="{{ search }}" placeholder="Search by ID, label, or region">
+      <label class="filter-check">
+        <input type="checkbox" name="unplaced" value="1" {% if unplaced_only %}checked{% endif %}
+          onchange="this.form.submit()">
+        Unplaced on map only
+      </label>
+      <button type="submit">Search</button>
+    </form>
+
+    {% if marks %}
+    <div class="marks-table-wrap">
+      <table class="marks-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Label</th>
+            <th>Region</th>
+            <th>Map</th>
+            <th>Captures</th>
+            <th>Last capture</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for mark in marks %}
+          <tr>
+            <td><a href="/marks/{{ mark.id }}">{{ mark.id }}</a></td>
+            <td>{{ mark.label }}</td>
+            <td>
+              {% if mark.body_region in region_labels %}
+              {{ region_labels[mark.body_region] }}
+              {% else %}
+              {{ mark.body_region or "—" }}
+              {% endif %}
+            </td>
+            <td>
+              {% if mark.is_placed %}
+              <a href="/body/{{ mark.map_region }}">Placed</a>
+              {% else %}
+              <span class="badge warn">Unplaced</span>
+              {% endif %}
+            </td>
+            <td>{{ mark.capture_count }}</td>
+            <td>
+              {% if mark.last_capture_at %}
+                {{ mark.last_capture_at.strftime("%Y-%m-%d") }}
+              {% else %}
+                —
+              {% endif %}
+            </td>
+            <td class="actions">
+              <a href="/marks/{{ mark.id }}/import">Import</a>
+              <a href="/marks/{{ mark.id }}/compare">Compare</a>
+              {% if mark.is_placed %}
+              <a href="/marks/{{ mark.id }}/place">Move</a>
+              {% endif %}
+              <a class="danger-link" href="/marks/{{ mark.id }}/delete">Delete</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+      {% if unplaced_only %}
+      <p>All marks are placed on the body map.</p>
+      {% elif search %}
+      <p>No marks match your search.</p>
+      {% else %}
+      <p>No marks yet. Add your first birth mark to start tracking photos.</p>
+      <a class="button" href="/marks/new">Add mark</a>
+      {% endif %}
+    </div>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

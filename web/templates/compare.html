@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Compare — {{ mark.id }}{% endblock %}
+
+{% block content %}
+<section class="page-header">
+  <div>
+    <p class="eyebrow">{{ mark.id }}</p>
+    <h1>Compare captures</h1>
+    <p class="muted">{{ mark.label }}</p>
+  </div>
+  <a href="/marks/{{ mark.id }}">Back to mark</a>
+</section>
+
+{% if captures|length < 2 %}
+<div class="empty-state">
+  <p>Import at least two photos for this mark to compare them side by side.</p>
+  <a class="button" href="/marks/{{ mark.id }}/import">Import photos</a>
+</div>
+{% else %}
+<form class="card compare-form" method="get" action="/marks/{{ mark.id }}/compare">
+  <div class="compare-selectors">
+    <label>
+      Left (older)
+      <select name="left">
+        <option value="">Select capture</option>
+        {% for capture in captures %}
+        <option value="{{ capture.id }}" {% if left_capture and left_capture.id == capture.id %}selected{% endif %}>
+          {{ capture.captured_at.strftime("%Y-%m-%d %H:%M") }} — {{ capture.original_filename or capture.file_path }}
+        </option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <label>
+      Right (newer)
+      <select name="right">
+        <option value="">Select capture</option>
+        {% for capture in captures %}
+        <option value="{{ capture.id }}" {% if right_capture and right_capture.id == capture.id %}selected{% endif %}>
+          {{ capture.captured_at.strftime("%Y-%m-%d %H:%M") }} — {{ capture.original_filename or capture.file_path }}
+        </option>
+        {% endfor %}
+      </select>
+    </label>
+  </div>
+  <button type="submit" class="button">Compare</button>
+</form>
+
+{% if left_capture and right_capture %}
+<section class="compare-panel">
+  <div class="compare-slot">
+    <img src="/images/{{ left_capture.file_path }}" alt="Left capture">
+    <p><strong>{{ left_capture.captured_at.strftime("%Y-%m-%d %H:%M") }}</strong></p>
+    <a href="/images/{{ left_capture.file_path }}" target="_blank" rel="noopener">Open full size</a>
+  </div>
+  <div class="compare-slot">
+    <img src="/images/{{ right_capture.file_path }}" alt="Right capture">
+    <p><strong>{{ right_capture.captured_at.strftime("%Y-%m-%d %H:%M") }}</strong></p>
+    <a href="/images/{{ right_capture.file_path }}" target="_blank" rel="noopener">Open full size</a>
+  </div>
+</section>
+{% elif left_capture or right_capture %}
+<p class="muted">Select both captures to see them side by side.</p>
+{% endif %}
+
+<section class="card">
+  <h2>All captures</h2>
+  <div class="filmstrip">
+    {% for capture in captures %}
+    <a class="filmstrip-item" href="/marks/{{ mark.id }}/compare?left={{ capture.id }}{% if right_capture %}&right={{ right_capture.id }}{% endif %}">
+      <img src="/thumbs/{{ capture.file_path }}" alt="{{ capture.captured_at.strftime('%Y-%m-%d') }}">
+      <span>{{ capture.captured_at.strftime("%Y-%m-%d") }}</span>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+{% endblock %}

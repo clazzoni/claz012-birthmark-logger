@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Import — {{ mark.id }}{% endblock %}
+
+{% block content %}
+<section class="page-header">
+  <div>
+    <p class="eyebrow">{{ mark.id }}</p>
+    <h1>Import photos</h1>
+    <p class="muted">{{ mark.label }}</p>
+  </div>
+  <a href="/marks/{{ mark.id }}">Back to mark</a>
+</section>
+
+{% if errors %}
+<div class="alert error">
+  <ul>
+    {% for error in errors %}
+    <li>{{ error }}</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+{% if skipped_duplicates %}
+<div class="alert warning">
+  <p>Skipped duplicate photos already stored for this mark:</p>
+  <ul>
+    {% for name in skipped_duplicates %}
+    <li>{{ name }}</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+{% if previews %}
+<section class="card">
+  <h2>Review capture dates</h2>
+  <p class="muted">Confirm or edit the date for each photo before saving.</p>
+
+  <form method="post" action="/marks/{{ mark.id }}/import/confirm">
+    <table class="preview-table">
+      <thead>
+        <tr>
+          <th>File</th>
+          <th>Capture date</th>
+          <th>Source</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in previews %}
+        <tr>
+          <td>{{ item.original_filename }}</td>
+          <td>
+            <input type="hidden" name="temp_id" value="{{ item.temp_id }}">
+            <input type="hidden" name="original_filename" value="{{ item.original_filename }}">
+            <input type="datetime-local" name="captured_at" required
+              value="{{ item.captured_at.strftime('%Y-%m-%dT%H:%M') }}">
+          </td>
+          <td>
+            {% if item.exif_found %}
+            <span class="badge ok">EXIF</span>
+            {% else %}
+            <span class="badge warn">Fallback</span>
+            {% endif %}
+            {% if item.warning %}
+            <p class="muted small">{{ item.warning }}</p>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <div class="form-actions">
+      <button type="submit" class="button">Save photos</button>
+      <a href="/marks/{{ mark.id }}/import">Cancel</a>
+    </div>
+  </form>
+</section>
+{% else %}
+<section class="card">
+  <h2>Upload photos</h2>
+  <p class="muted">Select JPEG or HEIC dermatoscope images for this mark.</p>
+
+  <form class="upload-form" method="post" action="/marks/{{ mark.id }}/import" enctype="multipart/form-data">
+    <input type="file" name="files" accept=".jpg,.jpeg,.png,.heic,.heif,image/jpeg,image/png,image/heic" multiple required>
+    <button type="submit" class="button">Upload and review dates</button>
+  </form>
+</section>
+{% endif %}
+{% endblock %}

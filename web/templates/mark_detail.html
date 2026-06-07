@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}{{ mark.id }} — Birth Mark Tracker{% endblock %}
+
+{% block content %}
+<section class="page-header">
+  <div>
+    <p class="eyebrow">{{ mark.id }}</p>
+    <h1>{{ mark.label }}</h1>
+    {% if body_region_label %}
+    <p class="muted">Region: {{ body_region_label }}</p>
+    {% endif %}
+    {% if mark.is_placed %}
+    <p class="muted">On body map: <a href="/body/{{ mark.map_region }}">{{ map_region_label }}</a></p>
+    {% else %}
+    <p><span class="badge warn">Unplaced on map</span></p>
+    {% endif %}
+  </div>
+  <div class="header-actions">
+    <a class="button" href="/marks/{{ mark.id }}/import">Import photos</a>
+    <a class="button secondary" href="/marks/{{ mark.id }}/compare">Compare</a>
+    <a class="button secondary" href="/marks/{{ mark.id }}/place">{% if mark.is_placed %}Move pin{% else %}Place on map{% endif %}</a>
+    <a href="/marks/{{ mark.id }}/edit">Edit</a>
+    <a class="danger-link" href="/marks/{{ mark.id }}/delete">Delete</a>
+  </div>
+</section>
+
+{% if mark.notes %}
+<section class="card">
+  <h2>Notes</h2>
+  <p>{{ mark.notes }}</p>
+</section>
+{% endif %}
+
+<section class="card">
+  <h2>Capture timeline</h2>
+
+  {% if captures %}
+  <div class="timeline">
+    {% for capture in captures %}
+    <article class="timeline-item">
+      <a href="/images/{{ capture.file_path }}" target="_blank" rel="noopener">
+        <img src="/thumbs/{{ capture.file_path }}" alt="{{ capture.original_filename or 'capture' }}">
+      </a>
+      <div>
+        <strong>{{ capture.captured_at.strftime("%Y-%m-%d %H:%M") }}</strong>
+        <p class="muted">{{ capture.original_filename or capture.file_path }}</p>
+        <a href="/marks/{{ mark.id }}/compare?left={{ capture.id }}">Use in compare</a>
+        <a class="danger-link" href="/marks/{{ mark.id }}/captures/{{ capture.id }}/delete">Delete photo</a>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state compact">
+    <p>No photos imported yet for this mark.</p>
+    <a class="button" href="/marks/{{ mark.id }}/import">Import photos</a>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}

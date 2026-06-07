@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Delete photo — {{ mark.id }}{% endblock %}
+
+{% block content %}
+<section class="page-header">
+  <h1>Delete photo</h1>
+</section>
+
+<section class="card">
+  <p>Delete this capture from <strong>{{ mark.id }} — {{ mark.label }}</strong>?</p>
+  <p class="muted">
+    {{ capture.captured_at.strftime("%Y-%m-%d %H:%M") }}
+    {% if capture.original_filename %}— {{ capture.original_filename }}{% endif %}
+  </p>
+  <p class="muted">The image file will be removed. This cannot be undone.</p>
+
+  <div class="delete-preview">
+    <img src="/thumbs/{{ capture.file_path }}" alt="Capture preview">
+  </div>
+
+  <form method="post" action="/marks/{{ mark.id }}/captures/{{ capture.id }}/delete" class="form-actions">
+    <button type="submit" class="button danger">Delete photo</button>
+    <a href="/marks/{{ mark.id }}">Cancel</a>
+  </form>
+</section>
+{% endblock %}
