@@ -5,7 +5,7 @@
 - komprimera jpg och gör manuell croppning innan bilderna sparas i en folder, den foldern kan vara inkluderad i gitrepot
 - hur ska man göra för att koppla bilder man tar på kroppen till att veta vilka de är i kamerarullen? hur kan man taggar bilerna som tas m google photos? nummerordning? tidsordnin? en bild i taget? och ladda ner? och välja diret från google photos via appen? krångligt att särsklija de olika ställena på bröstet
 - byt typsnitt, det är fult med nuvarande
-
+- lägg till möjligehten att byta ut defaultbilden till riktiga bilder av kroppen, lättare att finmarkera prickar då
 
 
 
