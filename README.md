@@ -58,8 +58,74 @@ lsof -ti:8000 | xargs kill
 ## Workflow
 
 1. **Add a mark** — give it a label (e.g. "left upper back") and optional body region and notes.
-2. **Import photos** — select the mark, upload dermatoscope images. EXIF capture dates are read automatically; edit them if needed, then save.
+2. **Import photos** — open the mark → **Import photos**. Add JPEG, HEIC, or PNG images (see [Importing photos](#importing-photos) below). EXIF capture dates are read automatically; edit them on the review screen if needed, then save.
 3. **Compare** — pick any two capture dates for the same mark and view them side by side.
+
+## Capturing photos with a dermatoscope
+
+Photos are taken on a phone with a clip-on dermatoscope, then imported into the app from Google Photos (see [Google Photos workflow](#google-photos-workflow)).
+
+### Hardware setup
+
+The setup used here is an **iboolo DE-400** dermatoscope clipped over the phone’s rear camera:
+
+![iboolo DE-400 dermatoscope packaging](docs/images/usage/iboolo-de400-box.jpg)
+
+The clip mounts over the camera lens. Use the **On/Off** switch and **Polarized** mode on the side of the attachment as needed:
+
+![Dermatoscope clipped onto a phone, side view](docs/images/usage/phone-mount-side.jpg)
+
+### Taking a capture
+
+Open the phone’s camera app and photograph the birth mark through the dermatoscope. The live view shows a magnified circular image; a **millimetre scale** appears along the bottom of the frame — keep it visible when you want size reference in the photo.
+
+![Phone camera showing a dermatoscope capture with mm ruler scale](docs/images/usage/capture-with-ruler.jpg)
+
+After capture, photos sync to Google Photos on the phone. Download them on your computer and import into the mark (see below).
+
+## Importing photos
+
+Pick a mark, then **Import photos**. Supported formats: **JPEG**, **HEIC**, **PNG**.
+
+After files are added, review capture dates (from EXIF when available), then **Save photos**. Duplicates already stored for that mark are skipped automatically.
+
+### Upload through the browser
+
+On the import page you can:
+
+- **Drag and drop** files or a ZIP onto the drop zone (upload starts immediately on drop)
+- **Choose files** — pick one or more images
+- **Choose folder** — pick a whole folder (useful after unzipping a Google Photos download)
+- **Upload and review dates** — if you chose files without dropping, click this to continue
+
+ZIP archives from Google Photos exports are supported; the app extracts images inside and skips non-image files.
+
+### Import from a folder on this computer
+
+If photos are already on disk, use **Import from folder on this computer** instead of re-uploading through the browser:
+
+1. Enter the folder path (e.g. `C:\Users\you\Downloads\Google Photos`)
+2. Click **Scan folder and review dates**
+
+The app reads files directly from that path (including subfolders). Allowed locations: your home folder, Downloads, the app `data/` folder, or a path saved in **Settings**.
+
+To avoid typing the path each time, set a **Default import folder** under [Settings](http://127.0.0.1:8000/settings).
+
+## Google Photos workflow
+
+There is no Google Photos login in the app — download to your computer first, then import locally.
+
+1. Take dermatoscope photos on your phone (they sync to Google Photos as usual).
+2. On your computer, download the photos from Google Photos:
+   - Selected photos as files, or
+   - A **ZIP** export, or
+   - An unzipped folder after export
+3. In Birth Mark Tracker: open the mark → **Import photos**, then use whichever fits:
+   - Drag the **ZIP** onto the drop zone
+   - **Choose folder** (or **Scan folder**) for an unzipped download folder
+   - **Choose files** or drag-and-drop for a smaller batch
+
+Tip: import one mark at a time — pick the mark first, then add only the photos for that birth mark.
 
 ## Body map
 
@@ -100,14 +166,27 @@ Everything lives under `data/`:
 - `data/bodymap.db` — SQLite index of marks and captures
 - `data/images/{mark_id}/` — full-size JPEG images
 - `data/thumbs/{mark_id}/` — thumbnails for timelines
+- `data/settings.json` — app preferences (e.g. default import folder)
 
 Back up by copying the entire `data/` folder.
 
-## Google Photos workflow
+## Settings
 
-1. Take dermatoscope photos on your phone (uploaded to Google Photos as usual).
-2. Download selected images to your computer.
-3. In Birth Mark Tracker: pick the mark → Import photos → upload the downloaded files.
+Open **Settings** from the top navigation to:
+
+- See where data is stored
+- Set a **default import folder** for the “Import from folder on this computer” option
+
+## Troubleshooting
+
+**Port already in use** — see [Stop](#stop) above.
+
+**UI looks outdated after an update** — hard-refresh the browser so static files reload:
+
+- Windows / Linux: **Ctrl+Shift+R**
+- macOS: **Cmd+Shift+R**
+
+The dev server (`python -m app.main`) auto-reloads Python changes; a browser refresh is still needed for CSS/JS updates.
 
 ## Tests
 

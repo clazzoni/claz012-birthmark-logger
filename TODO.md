@@ -2,39 +2,30 @@
 
 
 # PRIO1
+- komprimera jpg och gör manuell croppning innan bilderna sparas i en folder, den foldern kan vara inkluderad i gitrepot
+- hur ska man göra för att koppla bilder man tar på kroppen till att veta vilka de är i kamerarullen? hur kan man taggar bilerna som tas m google photos? nummerordning? tidsordnin? en bild i taget? och ladda ner? och välja diret från google photos via appen? krångligt att särsklija de olika ställena på bröstet
+- byt typsnitt, det är fult med nuvarande
+
 
 
 
 # PRIO2
+- try to detect automatically where the mark is, or let the user click on the center of the mark
+- could be an initial alignment process that includes: cropping, measuring the scale in the image, finding the center of the mark, rotating the mark to align with previous marks, the cropping could be done after scaling so that the image can be cropped without the rouler, maybe it is possible to add EXIF data that stores the mm per pixel value.
+- could be display options, can visualize marker circles that show dimensions, or a ruler that is optional to show in the image
 
-- exif ska visa eurpoesiak datum
-- drag o drop photos vid import 
-- compare ska vara per dag
-- instead of exif with the file name when comparing, only show the date and a timestamp
-
+# PRIO3
+- use european date 2026-
+- upload to a web page, how can data be stored online? 
+- make an andorid app? 
+- possibility to have multiple users 
+- connect to vision analysis of marks for grading
 
 
 
 # MISC
-- capture timeline should show different color borders for different dates so that it is easy to see which photo is which date 
-- Automatic centration around the mark. Automatic temporary cropping. The user should be able to rotate the mark, and rotation angle should be saved in exif or in a tag. 
-- possible to resize photo. 
-- Function to use the mm scale to do measurements in the images.
-- Connect the app to webpage for analysis. 
-- 2d body is probably enough
-- make an android app 
-- it should be possible to crop the photos, alternatively the program could automaticllay temporaryly crop and zoom, or the cropping could be temporary to show only the interesting part. The problem is that sometimes you want to see the ruler. Maybe it could be possible to use the ruler initially to set the scale and then that scale is shown as an overlay, or possibly there could be narrow gray lines that show the diameter 
-- is is possible to hos my app online? google? google drive? 
-- need to add the possibility to have multiple users
-- login
-
-
-- process: 
-    - There should be a certain order of how the photos are taken alon the body 
-    - the files are downloaded as a zip from google photos
-    - the photos from the downloaded folder are (first unzipped) then shown in the interface, one can then drag and drop the photos to the correct birth mark folder, alternatively one can choose which mark first, then click on the photos that are from that mark
 
 
 
-# ADD TO INSTRUCTION
-- press Ctrl+Shift+R to restart app
+
+

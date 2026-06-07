@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Form, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -8,6 +8,7 @@ from app.config import DATA_DIR, HOST, IMAGES_DIR, PORT, THUMBS_DIR, WEB_DIR
 from app.map_regions import REGION_LABELS
 from app.routes import body, captures, compare, marks
 from app.routes.body import overview_context
+from app.settings_store import get_import_folder, set_import_folder
 from app.storage import ensure_dirs, register_heif
 
 register_heif()
@@ -47,11 +48,29 @@ async def home(request: Request, q: str = "", unplaced: str = ""):
 
 
 @app.get("/settings", response_class=HTMLResponse)
-async def settings(request: Request):
+async def settings(request: Request, saved: str = ""):
     return templates.TemplateResponse(
         request,
         "settings.html",
-        {"data_dir": DATA_DIR.resolve()},
+        {
+            "data_dir": DATA_DIR.resolve(),
+            "import_folder": get_import_folder(),
+            "saved": saved.lower() in ("1", "true", "yes"),
+        },
+    )
+
+
+@app.post("/settings", response_class=HTMLResponse)
+async def save_settings(request: Request, import_folder: str = Form("")):
+    set_import_folder(import_folder)
+    return templates.TemplateResponse(
+        request,
+        "settings.html",
+        {
+            "data_dir": DATA_DIR.resolve(),
+            "import_folder": get_import_folder(),
+            "saved": True,
+        },
     )
 
 

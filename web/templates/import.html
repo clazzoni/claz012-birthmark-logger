@@ -80,12 +80,52 @@
 {% else %}
 <section class="card">
   <h2>Upload photos</h2>
-  <p class="muted">Select JPEG or HEIC dermatoscope images for this mark.</p>
+  <p class="muted">Drag and drop JPEG, HEIC, PNG, or ZIP files, or choose files or a whole folder.</p>
 
-  <form class="upload-form" method="post" action="/marks/{{ mark.id }}/import" enctype="multipart/form-data">
-    <input type="file" name="files" accept=".jpg,.jpeg,.png,.heic,.heif,image/jpeg,image/png,image/heic" multiple required>
-    <button type="submit" class="button">Upload and review dates</button>
+  <form id="import-upload-form" class="upload-form" method="post"
+    action="/marks/{{ mark.id }}/import" enctype="multipart/form-data">
+    <div class="import-dropzone" id="import-dropzone">
+      <p class="import-dropzone-title">Drop photos here</p>
+      <p class="muted small">Supports JPEG, HEIC, PNG, and ZIP archives from Google Photos downloads.</p>
+      <input type="file" id="import-files" name="files"
+        accept=".jpg,.jpeg,.png,.heic,.heif,.zip,image/jpeg,image/png,image/heic,application/zip"
+        multiple hidden>
+      <input type="file" id="import-folder" name="files"
+        accept=".jpg,.jpeg,.png,.heic,.heif,image/jpeg,image/png,image/heic"
+        webkitdirectory directory multiple hidden>
+    </div>
+
+    <div class="import-picker-actions">
+      <button type="button" class="button secondary" id="pick-files">Choose files</button>
+      <button type="button" class="button secondary" id="pick-folder">Choose folder</button>
+      <button type="submit" class="button">Upload and review dates</button>
+    </div>
+    <p class="muted small" id="import-status" aria-live="polite"></p>
   </form>
 </section>
+
+<section class="card">
+  <h2>Import from folder on this computer</h2>
+  <p class="muted">Read photos directly from a local folder without re-uploading through the browser.</p>
+
+  <form class="form" method="post" action="/marks/{{ mark.id }}/import/from-folder">
+    <label>
+      Folder path
+      <input type="text" name="folder_path" value="{{ import_folder }}"
+        placeholder="C:\Users\you\Downloads\Google Photos">
+    </label>
+    <div class="form-actions">
+      <button type="submit" class="button">Scan folder and review dates</button>
+    </div>
+  </form>
+  <p class="muted small">
+    Allowed paths include your home folder, Downloads, and the app data folder.
+    Save a default in <a href="/settings">Settings</a>.
+  </p>
+</section>
 {% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/import.js"></script>
 {% endblock %}

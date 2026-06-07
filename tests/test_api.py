@@ -214,3 +214,60 @@ def test_import_preview(client):
     assert preview.status_code == 200
     assert "Review capture dates" in preview.text
     assert "jan.jpg" in preview.text
+
+
+def test_import_preview_zip(client):
+    import io
+    import zipfile
+
+    client.post(
+        "/marks/new",
+        data={"label": "zip import", "body_region": "", "notes": ""},
+        follow_redirects=True,
+    )
+
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(buffer, "w") as archive:
+        archive.writestr("in_zip.jpg", _jpeg_bytes())
+    buffer.seek(0)
+
+    preview = client.post(
+        "/marks/BM-001/import",
+        files=[("files", ("photos.zip", buffer.read(), "application/zip"))],
+    )
+    assert preview.status_code == 200
+    assert "Review capture dates" in preview.text
+    assert "in_zip.jpg" in preview.text
+
+
+def test_import_page_has_dropzone(client):
+    client.post(
+        "/marks/new",
+        data={"label": "ui", "body_region": "", "notes": ""},
+        follow_redirects=True,
+    )
+    page = client.get("/marks/BM-001/import")
+    assert page.status_code == 200
+    assert "import-dropzone" in page.text
+    assert "Choose folder" in page.text
+    assert "import/from-folder" in page.text
+
+
+def test_import_from_folder(client, tmp_path):
+    client.post(
+        "/marks/new",
+        data={"label": "folder import", "body_region": "", "notes": ""},
+        follow_redirects=True,
+    )
+
+    folder = tmp_path / "gp-download"
+    folder.mkdir()
+    (folder / "mark.jpg").write_bytes(_jpeg_bytes())
+
+    preview = client.post(
+        "/marks/BM-001/import/from-folder",
+        data={"folder_path": str(folder)},
+    )
+    assert preview.status_code == 200
+    assert "Review capture dates" in preview.text
+    assert "mark.jpg" in preview.text

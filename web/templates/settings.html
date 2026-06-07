@@ -6,10 +6,30 @@
   <h1>Settings</h1>
 </section>
 
+{% if saved %}
+<div class="alert ok">
+  <p>Settings saved.</p>
+</div>
+{% endif %}
+
 <section class="card">
   <h2>Data location</h2>
   <p>All images and the database are stored locally at:</p>
   <code class="path">{{ data_dir }}</code>
+
+  <h2>Default import folder</h2>
+  <p class="muted">Used on the import page for scanning photos from disk (for example a Google Photos download folder).</p>
+
+  <form class="form" method="post" action="/settings">
+    <label>
+      Folder path
+      <input type="text" name="import_folder" value="{{ import_folder }}"
+        placeholder="C:\Users\you\Downloads\Google Photos">
+    </label>
+    <div class="form-actions">
+      <button type="submit" class="button">Save</button>
+    </div>
+  </form>
 
   <h2>Backup</h2>
   <p>Copy the entire <code>data/</code> folder to back up your marks, photos, and capture history.</p>
