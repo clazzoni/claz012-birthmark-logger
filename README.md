@@ -34,6 +34,10 @@ python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000) in your browser.
 
+![Home page — body maps and mark list](docs/images/usage/home-page.png)
+
+The **home page** shows front and back body maps on the left and your mark list on the right. Click a region on the map or a mark in the table to open it.
+
 ## Stop
 
 If the server is running in a terminal you can find, press **Ctrl+C** once or twice.
