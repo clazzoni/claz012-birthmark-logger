@@ -195,6 +195,10 @@ def test_body_map_pages(client):
     assert "viewBox=" in hand_svg
     assert 'viewBox="0 0 160 200"' not in hand_svg
 
+    back_leg = client.get("/body/left_leg?view=back")
+    assert back_leg.status_code == 200
+    assert "detail_leg_back.svg" in back_leg.text
+
 
 def test_import_preview(client):
     client.post(

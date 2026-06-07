@@ -35,7 +35,7 @@
   <ul class="place-mark-list">
     {% for mark in unplaced_marks %}
     <li>
-      <a href="/marks/{{ mark.id }}/place?region={{ region }}">{{ mark.id }} — {{ mark.label }}</a>
+      <a href="/marks/{{ mark.id }}/place?region={{ region }}&view={{ view }}">{{ mark.id }} — {{ mark.label }}</a>
     </li>
     {% endfor %}
   </ul>

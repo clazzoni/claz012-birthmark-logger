@@ -8,6 +8,7 @@ from app.map_regions import (
     detail_svg_filename,
     is_mirrored,
     is_valid_region,
+    normalize_view,
     region_label,
 )
 from app.models import MarkCreate, MarkPlacement, MarkUpdate
@@ -118,6 +119,7 @@ async def place_mark_form(
     request: Request,
     mark_id: str,
     region: str | None = Query(None),
+    view: str | None = Query(None),
 ):
     mark = db.get_mark(mark_id)
     if mark is None:
@@ -127,7 +129,7 @@ async def place_mark_form(
     if selected_region and not is_valid_region(selected_region):
         selected_region = None
 
-    svg_file = detail_svg_filename(selected_region) if selected_region else None
+    svg_file = detail_svg_filename(selected_region, view) if selected_region else None
     same_region = bool(
         selected_region and mark.map_region and selected_region == mark.map_region
     )

@@ -11,6 +11,17 @@ def test_map_region_constants():
     assert not is_valid_region("torso")
 
 
+def test_detail_svg_by_view():
+    from app.map_regions import detail_svg_filename, is_mirrored
+
+    assert detail_svg_filename("left_arm") == "detail_arm.svg"
+    assert detail_svg_filename("left_arm", "back") == "detail_arm_back.svg"
+    assert detail_svg_filename("left_leg", "back") == "detail_leg_back.svg"
+    assert detail_svg_filename("face", "back") == "detail_face.svg"
+    assert is_mirrored("left_arm") is True
+    assert is_mirrored("right_arm") is False
+
+
 def test_update_mark_placement():
     mark = db.create_mark(MarkCreate(label="arm mark"))
     placement = MarkPlacement(map_region="left_arm", map_x=0.4, map_y=0.6)

@@ -19,7 +19,7 @@
         <img src="/static/body/overview_front.svg" alt="Front body overview" class="overview-svg">
         {% for spot in front_hotspots %}
         <a class="region-hotspot{% if debug %} region-hotspot-debug{% endif %}"
-           href="/body/{{ spot.region }}"
+           href="/body/{{ spot.region }}?view=front"
            style="left:{{ spot.left }}%;top:{{ spot.top }}%;width:{{ spot.width }}%;height:{{ spot.height }}%;"
            title="{{ spot.label }}{% if spot.count %} ({{ spot.count }}){% endif %}">
           <span class="region-hotspot-label">{{ spot.label }}{% if spot.count %} · {{ spot.count }}{% endif %}</span>
@@ -34,7 +34,7 @@
         <img src="/static/body/overview_back.svg" alt="Back body overview" class="overview-svg">
         {% for spot in back_hotspots %}
         <a class="region-hotspot{% if debug %} region-hotspot-debug{% endif %}"
-           href="/body/{{ spot.region }}"
+           href="/body/{{ spot.region }}?view=back"
            style="left:{{ spot.left }}%;top:{{ spot.top }}%;width:{{ spot.width }}%;height:{{ spot.height }}%;"
            title="{{ spot.label }}{% if spot.count %} ({{ spot.count }}){% endif %}">
           <span class="region-hotspot-label">{{ spot.label }}{% if spot.count %} · {{ spot.count }}{% endif %}</span>

@@ -21,13 +21,16 @@ SVG_NS = "http://www.w3.org/2000/svg"
 PADDING_RATIO = 0.10
 
 # (output filename, overview side, region key in FIGURE_REGIONS, aria-label)
+# Arms/legs: crop the viewer's-left limb; left_* regions mirror, right_* do not.
 DETAIL_CROPS: tuple[tuple[str, str, str, str], ...] = (
     ("detail_face.svg", "front", "face", "Face detail"),
     ("detail_front_torso.svg", "front", "front_torso", "Front torso detail"),
     ("detail_back.svg", "back", "back", "Back detail"),
-    ("detail_arm.svg", "front", "left_arm", "Arm detail"),
-    ("detail_leg.svg", "front", "left_leg", "Leg detail"),
-    ("detail_hand.svg", "front", "left_hand", "Hand detail"),
+    ("detail_arm.svg", "front", "right_arm", "Front arm detail"),
+    ("detail_arm_back.svg", "back", "right_arm", "Back arm detail"),
+    ("detail_leg.svg", "front", "right_leg", "Front leg detail"),
+    ("detail_leg_back.svg", "back", "right_leg", "Back leg detail"),
+    ("detail_hand.svg", "front", "right_hand", "Hand detail"),
 )
 
 

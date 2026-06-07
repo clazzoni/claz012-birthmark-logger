@@ -12,6 +12,7 @@ from app.map_regions import (
     detail_svg_filename,
     is_mirrored,
     is_valid_region,
+    normalize_view,
     region_label,
 )
 from app.overview_hotspots import FIGURE_BBOX, hotspots_for_side
@@ -111,13 +112,15 @@ async def body_region(request: Request, region: str):
     ]
     unplaced_marks = db.list_marks(unplaced_only=True)
 
-    svg_file = detail_svg_filename(region)
+    view = normalize_view(request.query_params.get("view"))
+    svg_file = detail_svg_filename(region, view)
     return request.app.state.templates.TemplateResponse(
         request,
         "body_region.html",
         {
             "region": region,
             "region_label": region_label(region),
+            "view": view,
             "svg_file": svg_file,
             "mirrored": is_mirrored(region),
             "placed_marks": placed_marks,
